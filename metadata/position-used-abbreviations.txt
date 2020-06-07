@@ -1,0 +1,17 @@
+GK - Goalkeeper
+RB - Right Back
+RWB - Right Wing Back
+CB - Centre Back
+LWB - Left Wing Back
+LB - Left Back
+CM - Centre Mid
+CDM - Centre Defensive Mid
+CAM - Centre Attacking Mid
+RM - Right Mid
+LM - Left Mid
+LW - Left Wing
+RW - Right Wing
+CF - Centre Forward
+LF - Left Forward
+RF - Right Forward
+ST - Striker
