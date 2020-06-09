@@ -51,3 +51,4 @@ Metadata collected as part of this project is placed in folder metadata.
 
 * Goalkeepers had no values for field positions. Set them to 0
 * No Release Clause: set missing values to 0
+* no club, no value, no overall (score): remove player
