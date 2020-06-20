@@ -2,7 +2,7 @@
 
 ###### Description of Each Feature
 ![features-01-27.jpg](features-01-27.jpg)
-![features-27-52.jpg](features-27-52.jpg)
+![features-28-53.jpg](features-28-53.jpg)
 
 ###### Player Positions as Layout
 ![player-positions-with-layout](player-positions-with-layout.png)
