@@ -1,7 +1,7 @@
 ## Metadata
 
 ###### Description of Each Feature
-![features-first-20](features-first-26.png)
+![features-first-26](features-first-26.png)
 
 ###### Player Positions as Layout
 ![player-positions-with-layout](player-positions-with-layout.png)
