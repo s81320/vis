@@ -1,7 +1,7 @@
 ## Metadata
 
 ###### Description of Each Feature
-![features-first-26](features-first-26.png)
+![features-01-27.jpg](features-01-27.jpg)
 ![features-27-52.jpg](features-27-52.jpg)
 
 ###### Player Positions as Layout
