@@ -1,7 +1,7 @@
 ## Metadata
 
 ###### Player Positions As Layout
-![player-positions-with-layout](player-positions-with-layout.png)\
+![player-positions-with-layout](player-positions-with-layout.png)
 
 
 ###### Resource
