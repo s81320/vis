@@ -9,6 +9,8 @@
 ###### Player Positions as Layout
 ![player-positions-with-layout](player-positions-with-layout.png)
 
+###### Skills Grouping
+![skill-features-grouping.jpg](skill-features-grouping.jpg)
 
 ###### Resource
 1. The following discussion thread in kaggle describes the features for this dataset:\
