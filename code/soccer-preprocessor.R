@@ -30,14 +30,11 @@ preprocess <- function(io_dir, input_csv_name) {
     stringsAsFactors=FALSE
   )
   
-  # listing column names of unprocessed soccer data
-  columns <- colnames(soccer.raw)
-  
-  
   # pre-processing
   
-  # step-1 [features_removal]
   
+  
+  # step-1 [features_removal]
   # remove columns - 
   # 1. serial ("X.U.FEFF"),
   # 2. "ID",
@@ -48,6 +45,9 @@ preprocess <- function(io_dir, input_csv_name) {
   # 7. "Joined",
   # 8. "Loaned.From",
   # 9. "Contract.Valid.Until"
+  
+  # listing column names of unprocessed soccer data
+  columns <- colnames(soccer.raw)
   
   removable_columns_indices <- c(
     which(columns=="X.U.FEFF."),
@@ -61,30 +61,13 @@ preprocess <- function(io_dir, input_csv_name) {
     which(columns=="Contract.Valid.Until")
   )
   soccer.preprocessed <- soccer.raw[, -removable_columns_indices]
-  # View(soccer.preprocessed)
   # remaining_columns=80
+  
+  
   
   # step-2 [conversion]
   # convert amount strings of "Value", "Wage", "Release.Clause" to numeric, 
   # e.g. €1M -> 1000000
-  
-  # install.packages("readr")
-  # require(readr)
-  # amount_to_euro <- function(amount_str) {
-  #  amount.processed <- str_replace_all(amount_str, "€", "")
-  #  if (str_detect(amount.processed, "M")) {
-  #    amount.processed <- parse_number(amount.processed) * 1e6
-  #  } else if (str_detect(amount.processed, "K")) {
-  #    amount.processed <- parse_number(amount.processed) * 1e3
-  #  } else {
-  #    amount.processed <- parse_number(amount.processed)
-  #  }
-  #  amount.processed
-  # }
-  
-  # soccer.preprocessed$Value <- sapply(soccer.preprocessed$Value, amount_to_euro)
-  # soccer.preprocessed$Wage <- sapply(soccer.preprocessed$Wage, amount_to_euro)
-  # soccer.preprocessed$Release.Clause <- sapply(soccer.preprocessed$Release.Clause, amount_to_euro)
   
   euro_string_to_euro_numeric <- function(euro_strings) {
     result <- str_match(euro_strings, "(€)(\\d+)(\\.)?(\\d+)?(M|K)?")[, c(3:6)]
@@ -112,28 +95,13 @@ preprocess <- function(io_dir, input_csv_name) {
     MARGIN=2,
     FUN=euro_string_to_euro_numeric
   )
-  # View(soccer.preprocessed)
   
   
-  # levels(soccer.preprocessed$LS[which(soccer.preprocessed$Position=="GK")])
-  # boxplot(soccer.preprocessed$Wage[which(soccer.preprocessed$Club=="Juventus")]<=1e5, horizontal=TRUE)
-  # range(soccer.preprocessed$Value)
-  
-  # dev.off()
-  # par(mfrow=c(2,1))
-  # boxplot(1/(soccer.preprocessed$Value + 1), horizontal = TRUE)
-  # plot(density(log(log(soccer.preprocessed$Value, base=10), base=10)))
-  # dev.off()
-  
-  # dev.off()
-  # par(mfrow=c(2,1))
-  # boxplot(log(soccer.preprocessed$Wage, base=10), horizontal = TRUE)
-  # plot(density(log(soccer.preprocessed$Wage, base=10)))
-  # dev.off()
   
   # step-3 [conversion]
   # convert "Height" feet'inch values to cm
   # e.g. 5'7 (5 feet 7 inch) -> 170 (cm)
+  
   feet_inches_to_cm <- function(heights_in_fi) {
     result <- apply(str_split(heights_in_fi, "'", simplify=TRUE), 2, as.numeric)
     result[, 1] <- sapply(result[, 1], function(x) x * 30.48)
@@ -142,9 +110,12 @@ preprocess <- function(io_dir, input_csv_name) {
   }
   soccer.preprocessed$Height <- feet_inches_to_cm(soccer.preprocessed$Height)
   
+  
+  
   # step-4 [conversion]
   # convert "Weight" lbs values to kg
   # e.g. 150lbs (150 pound) -> 68 (kg)
+  
   pounds_to_kg <- function(weights_in_pound) {
     result <- str_replace_all(weights_in_pound, "lbs", "")
     result <- sapply(result, as.numeric, USE.NAMES=FALSE)
@@ -152,25 +123,12 @@ preprocess <- function(io_dir, input_csv_name) {
   }
   soccer.preprocessed$Weight <- pounds_to_kg(soccer.preprocessed$Weight)
   
-  # sum(is.na(soccer.preprocessed$Weight))
-  # sum(is.na(soccer.preprocessed$Height))
-  
-  # res <- str_match(c("€10.5M", "€100K", "€1200", ""), "(?:€)(\\d+\\.?\\d+?)(M|K)?"); res
-  # res <- res[, c(2:3)]; res
-  # res[,1];class(res[,1])
-  # x <- sapply(res[,1], as.numeric, USE.NAMES = FALSE);x
-  # class(x)
-  # res[,1] <- x;res
-  # class(res[,1])
   
   
   # step-5 [conversion]
   # position-wise  scores in columns (e.g. "LS", "ST", "RS" ...) are in format x+y,
   # transformed to use only x value, removed +y, parsed into numerical value
   # e.g. "80+2" -> 80
-  
-  # sum(soccer.preprocessed$LS=="")
-  # apply(soccer.preprocessed[20:45], 2, function(x) sum(str_detect(x, "(\\d{1,2})(?:\\+\\d{1})")==TRUE))
   
   scores_to_flat_numeric <- function(scores) {
     sapply(str_match(scores, "(\\d{1,2})(?:\\+\\d{1})")[, 2], as.numeric, USE.NAMES=FALSE)
@@ -209,22 +167,8 @@ preprocess <- function(io_dir, input_csv_name) {
     MARGIN=2,
     FUN=scores_to_flat_numeric
   )
-  # View(soccer.preprocessed)
   
   
-  # apply(
-  #   X=soccer.preprocessed[1:80],
-  #   MARGIN=2,
-  #   FUN=function(x) sum(is.na(x))
-  # )
-  
-  # sum(soccer.preprocessed$Name=="")
-  # sum(soccer.preprocessed$Nationality=="")
-  # sum(soccer.preprocessed$Club=="")
-  # sum(soccer.preprocessed$Preferred.Foot=="")
-  # sum(soccer.preprocessed$Work.Rate=="")
-  # sum(soccer.preprocessed$Body.Type=="")
-  # sum(soccer.preprocessed$Position=="")
   
   # step-6 [conversion]
   # converting to factor datatype for columns with catergorical values
@@ -250,6 +194,7 @@ preprocess <- function(io_dir, input_csv_name) {
   soccer.preprocessed$Position <- as.factor(soccer.preprocessed$Position)
   
   
+  
   # step-7 [missing_value_handling]
   # removing rows with missing value (NA) step wise
   
@@ -269,21 +214,11 @@ preprocess <- function(io_dir, input_csv_name) {
   # remaining_rows = 17918
   
   # 7d. imputing positional columns values to zero (0) for players with "Position"=GK
-  
-  # sum(soccer.preprocessed$Position=="GK")
   soccer.preprocessed[which(soccer.preprocessed$Position == "GK"), position_columns_indices] <- 0
-  
   
   # 7e. imputing missing "Release.Clause" values with zero (0)
   soccer.preprocessed[which(is.na(soccer.preprocessed$Release.Clause)), which(columns=="Release.Clause")] <- 0
   
-  
-  # apply(
-  #   X=soccer.preprocessed[1:80],
-  #   MARGIN=2,
-  #   FUN=function(x) sum(is.na(x))
-  # )
-  # sum(is.na(soccer.preprocessed))
   
   
   # writing preprocessed soccer data to output
