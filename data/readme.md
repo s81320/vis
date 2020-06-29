@@ -1,5 +1,9 @@
 ## Data Preprocessing (Version: 2, with R)
 
+###### Preprocessing Script: [soccer-preprocessor.R](../code/soccer-preprocessor.R)
+
+###### Processed Data: [soccer-preprocessed.csv](soccer-preprocessed.csv)
+
 ###### Unprocessed Data
 1. Dimension: 18207 rows (Players) X 89 columns (Attributes)  
 2. Overview  
@@ -70,6 +74,8 @@ removing rows with missing value (NA) step wise
 1. Dimension: **17918** rows (Players) X **80** columns (Attributes)
   
   
+
+## Data Preprocessing (Version: 1, with RapidMiner)  
   
 latest contribution: ...noMissingValue
 
