@@ -10,7 +10,7 @@
 
 ###### PCA  
 1. Using Broader.Position
-2. Script: [soccer-pca-grouped-by-position.R](../code/soccer-pca-grouped-by-position.R), [soccer-pca-scree-plot.R](../code/soccer-pca-scree-plot.R)  
+2. Script: [soccer-pca-grouped-by-position.R](../../code/soccer-pca-grouped-by-position.R), [soccer-pca-scree-plot.R](../../code/soccer-pca-scree-plot.R)  
 3. Plot  
   
 ![pca_skill_scores.png](pca_skill_scores.png)
