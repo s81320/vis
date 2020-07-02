@@ -25,11 +25,11 @@
   
 ![positional-scores-correlation-plot.png](positional-scores-correlation-plot.png)
   
-5. Scatter Plot - v2 (with scores in first two PC axes)(Scaled + Unscaled)  
+5. Scatter Plot - v2 (with scores in first two PC axes) (Scaled+Unscaled)  
   
 ![pca-skill-scores-with-correlated-broader-position.png](pca-skill-scores-with-correlated-broader-position.png)
   
-6. Scatter Plot - v2 (with scores in first two PC axes)(only Unscaled)  
+6. Scatter Plot - v2 (with scores in first two PC axes) (only Unscaled)  
   
 ![pca-skill-scores-with-correlated-broader-position-unscaled.png](pca-skill-scores-with-correlated-broader-position-unscaled.png)
   
