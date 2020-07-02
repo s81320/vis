@@ -1,0 +1,88 @@
+setwd("D:/msc-ds/course-resource/data-visualization/project")
+rm(list=ls())
+
+soccer.preprocessed <- read.csv(
+  "soccer-preprocessed.csv",
+  encoding = "UTF-8"
+)
+
+# Broader.Position
+GLK <- c(
+  "GK"
+)
+DFN <- c(
+  "LB",
+  "LCB",
+  "CB",
+  "RCB",
+  "RB",
+  "LWB",
+  "LDM",
+  "CDM",
+  "RDM",
+  "RWB"
+)
+MDF <- c(
+  "LCM",
+  "CM",
+  "RCM"
+)
+ATK <- c(
+  "LM",
+  "RM",
+  "LAM",
+  "CAM",
+  "RAM",
+  "LW",
+  "LF",
+  "CF",
+  "RF",
+  "RW",
+  "LS",
+  "ST",
+  "RS"
+)
+
+soccer.preprocessed$Broader.Position <- ifelse(
+  soccer.preprocessed$Position %in% GLK, "GLK", ifelse(
+    soccer.preprocessed$Position %in% DFN, "DFN", ifelse(
+      soccer.preprocessed$Position %in% MDF, "MDF", "ATK"
+    )
+  )
+)
+
+soccer.preprocessed$Broader.Position <- factor(
+  soccer.preprocessed$Broader.Position,
+  levels=c("GLK","DFN","MDF", "ATK")
+)
+
+soccer.pca <- prcomp(soccer.preprocessed[, 46:79])
+soccer.pca.x12 <- soccer.pca$x[, 1:2]
+
+dev.off()
+mm <- rbind(c(1,1),c(2,2))
+ww <- c(1,1)
+hh <- c(10,1)
+layout(mat=mm, widths=ww, heights=hh)
+
+colors <- c("#56B4E9", "#009E73", "#F0E442", "#D55E00")
+pch <- c(3, 4, 21, 22)
+
+plot(
+  soccer.pca.x12, 
+  main="First two PCs, unscaled",
+  pch=pch[as.numeric(soccer.preprocessed$Broader.Position)],
+  col=colors[as.numeric(soccer.preprocessed$Broader.Position)],
+  xlab=paste0("PC1, ", round(100*soccer.pca$sdev[1]^2 / sum(soccer.pca$sdev^2), 1), "%"),
+  ylab=paste0("PC2, ", round(100*soccer.pca$sdev[2]^2 / sum(soccer.pca$sdev^2), 1), "%")
+)
+
+par(mar=rep(0,4))
+plot.new()
+legend(
+  "center",
+  pch=pch,
+  col=colors,
+  legend=levels(soccer.preprocessed$Broader.Position),
+  ncol=4
+)

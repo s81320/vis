@@ -8,13 +8,47 @@ rm(list=ls())
 
 require(ggbiplot)
 
-soccer.preprocessed <- read.csv("soccer-preprocessed.csv", encoding = "UTF-8")
+soccer.preprocessed <- read.csv(
+  "soccer-preprocessed.csv",
+  encoding = "UTF-8"
+)
 
 # Broader.Position
-GLK <- c("GK")
-DFN <- c("LB", "LCB", "CB", "RCB", "RB", "LWB", "LDM", "CDM", "RDM", "RWB")
-MDF <- c("LM", "LCM", "CM", "RCM", "RM", "LAM", "CAM", "RAM")
-ATK <- c("LW", "LF", "CF", "RF", "RW", "LS", "ST", "RS")
+GLK <- c(
+  "GK"
+)
+DFN <- c(
+  "LB",
+  "LCB",
+  "CB",
+  "RCB",
+  "RB",
+  "LWB",
+  "LDM",
+  "CDM",
+  "RDM",
+  "RWB"
+)
+MDF <- c(
+  "LCM",
+  "CM",
+  "RCM"
+)
+ATK <- c(
+  "LM",
+  "RM",
+  "LAM",
+  "CAM",
+  "RAM",
+  "LW",
+  "LF",
+  "CF",
+  "RF",
+  "RW",
+  "LS",
+  "ST",
+  "RS"
+)
 
 soccer.preprocessed$Broader.Position <- ifelse(
   soccer.preprocessed$Position %in% GLK, "GLK", ifelse(
@@ -51,9 +85,10 @@ geom_point(
     colour=soccer.preprocessed$Broader.Position
   ),
   size=0.5,
-  alpha=0.075
+  alpha=0.10
 ) +
 theme(
   legend.direction='horizontal',
   legend.position='top'
 )
+

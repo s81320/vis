@@ -6,30 +6,45 @@
 
 ###### Broader.Position  
   
-![Broader.Position.png](Broader.Position.png)
+
 
 ###### PCA  
 1. Scripts  
- a. [soccer-pca-grouped-by-position.R](../../code/soccer-pca-grouped-by-position.R)  
- b. [soccer-pca-scree-plot.R](../../code/soccer-pca-scree-plot.R)  
- c. [soccer-pca-biplot.R](../../code/soccer-pca-biplot.R)  
- d. [soccer-pca-ggbiplot.R](../../code/soccer-pca-ggbiplot.R)  
+ a. [pca-skill-scores-with-playfield-broader-position.R](../../code/pca-skill-scores-with-playfield-broader-position.R)  
+ b. [pca-skill-scores-with-correlated-broader-position.R](../../code/pca-skill-scores-with-correlated-broader-position.R)  
+ c. [pca-skill-scores-with-correlated-broader-position-unscaled.R](../../code/pca-skill-scores-with-correlated-broader-position-unscaled.R)  
+ d. [pca-skill-scores-screeplot.R](../../code/pca-skill-scores-screeplot.R)  
+ e. [pca-skill-scores-biplot.R](../../code/pca-skill-scores-biplot.R)  
+ f. [pca-skill-scores-ggbiplot.R](../../code/pca-skill-scores-ggbiplot.R)  
   
-2. Using Broader.Position  
+2. Using Broader.Position (based on positional layers in playfield)  
   
-3. Scatter Plot (with first two PC axes)  
+![Broader.Position.png](Broader.Position.png)
   
-![pca_skill_scores.png](pca_skill_scores.png)
+3. Scatter Plot - v1 (with scores in first two PC axes)(Scaled + Unscaled)  
   
-4. Scree Plot  
+![pca-skill-scores-with-playfield-broader-position.png](pca-skill-scores-with-playfield-broader-position.png)
   
-![pca_skill_scores_scree_plot.png](pca_skill_scores_scree_plot.png)  
+4. Using Broader.Position (based on correlation of positional scores)  
   
-5. Biplot  
- a. With biplot() function  
+![positional-scores-correlation-plot.png](positional-scores-correlation-plot.png)
   
-![soccer-pca-biplot.png](soccer-pca-biplot.png)  
+5. Scatter Plot - v2 (with scores in first two PC axes)(Scaled + Unscaled)  
   
- b. With ggbiplot() function  
+![pca-skill-scores-with-correlated-broader-position.png](pca-skill-scores-with-correlated-broader-position.png)
   
-![soccer-pca-ggbiplot.png](soccer-pca-ggbiplot.png)  
+6. Scatter Plot - v2 (with scores in first two PC axes)(only Unscaled)  
+  
+![pca-skill-scores-with-correlated-broader-position-unscaled.png](pca-skill-scores-with-correlated-broader-position-unscaled.png)
+  
+7. Scree Plot  
+  
+![pca-skill-scores-screeplot.png](pca-skill-scores-screeplot.png)  
+  
+8. Biplot - with biplot() function  
+  
+![pca-skill-scores-biplot.png](pca-skill-scores-biplot.png)
+  
+9. Biplot - with ggbiplot() function  
+  
+![pca-skill-scores-ggbiplot.png](pca-skill-scores-ggbiplot.png)
