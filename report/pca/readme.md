@@ -3,11 +3,7 @@
 ###### Selected Features  
   
 ![highlight_feature_usage.png](highlight_feature_usage.png)
-
-###### Broader.Position  
   
-
-
 ###### PCA  
 1. Scripts  
  a. [pca-skill-scores-with-playfield-broader-position.R](../../code/pca-skill-scores-with-playfield-broader-position.R)  
@@ -21,7 +17,7 @@
   
 ![Broader.Position.png](Broader.Position.png)
   
-3. Scatter Plot - v1 (with scores in first two PC axes)(Scaled + Unscaled)  
+3. Scatter Plot - v1 (with scores in first two PC axes) (Scaled+Unscaled)  
   
 ![pca-skill-scores-with-playfield-broader-position.png](pca-skill-scores-with-playfield-broader-position.png)
   
