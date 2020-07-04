@@ -6,7 +6,8 @@
 setwd("D:/msc-ds/course-resource/data-visualization/project")
 rm(list=ls())
 
-require(ggbiplot)
+library(RColorBrewer)
+library(ggbiplot)
 
 soccer.preprocessed <- read.csv(
   "soccer-preprocessed.csv",
@@ -62,10 +63,18 @@ soccer.preprocessed$Broader.Position <- factor(
   soccer.preprocessed$Broader.Position,
   levels=c("GLK","DFN","MDF", "ATK")
 )
-
 soccer.pca <- prcomp(soccer.preprocessed[, 46:79])
-colors <- c("#56B4E9", "#009E73", "#F0E442", "#D55E00")
-pch <- c(3, 4, 21, 22)
+
+pallete.set2 <- brewer.pal(n=8, name="Set2")
+pallete.paired <- brewer.pal(n=12, name="Paired")
+pallete.dark2 <- brewer.pal(n=8, name="Dark2")
+
+colors <- c(
+  pallete.paired[2],
+  pallete.paired[4],
+  pallete.set2[6],
+  pallete.dark2[2]
+)
 
 ggbiplot(
   soccer.pca,
@@ -91,4 +100,3 @@ theme(
   legend.direction='horizontal',
   legend.position='top'
 )
-

@@ -1,8 +1,13 @@
 setwd("D:/msc-ds/course-resource/data-visualization/project")
 rm(list=ls())
 
+library(RColorBrewer)
+
 soccer.preprocessed <- read.csv("soccer-preprocessed.csv", encoding = "UTF-8")
 soccer.pca <- prcomp(soccer.preprocessed[, 46:79])
+
+pallete.greys <- brewer.pal(n=8, name="Greys")
+pallete.dark2 <- brewer.pal(n=8, name="Dark2")
 
 dev.off()
 
@@ -15,7 +20,7 @@ biplot(
   xaxt="n",
   yaxt="n",
   xpd=NA,
-  col=c("grey", "#D55E00"),
+  col=c(pallete.greys[3], pallete.dark2[4]),
   cex=0.6,
   cex.main=0.8,
   cex.lab=0.8,

@@ -1,6 +1,8 @@
 setwd("D:/msc-ds/course-resource/data-visualization/project")
 rm(list=ls())
 
+library(RColorBrewer)
+
 soccer.preprocessed <- read.csv("soccer-preprocessed.csv", encoding = "UTF-8")
 
 # Broader.Position
@@ -66,7 +68,17 @@ ww <- c(1,1)
 hh <- c(10,1)
 layout(mat=mm, widths=ww, heights=hh)
 
-colors <- c("#56B4E9", "#009E73", "#F0E442", "#D55E00")
+pallete.set2 <- brewer.pal(n=8, name="Set2")
+pallete.paired <- brewer.pal(n=12, name="Paired")
+pallete.dark2 <- brewer.pal(n=8, name="Dark2")
+
+colors <- c(
+  pallete.paired[2],
+  pallete.paired[4],
+  pallete.set2[6],
+  pallete.dark2[2]
+)
+
 pch <- c(3, 4, 21, 22)
 
 plot(

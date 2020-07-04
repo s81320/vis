@@ -1,6 +1,8 @@
 setwd("D:/msc-ds/course-resource/data-visualization/project")
 rm(list=ls())
 
+library(RColorBrewer)
+
 soccer.preprocessed <- read.csv(
   "soccer-preprocessed.csv",
   encoding="UTF-8"
@@ -10,6 +12,8 @@ soccer.ev <- eigen(
     soccer.preprocessed[, 46:79]
   )
 )$values
+
+pallete.dark2 <- brewer.pal(n=8, name="Dark2")
 
 dev.off()
 mm <- rbind(c(1,2))
@@ -33,13 +37,13 @@ plot(
 abline(
   h=mean(soccer.ev),
   lty="dotted",
-  col="#D55E00"
+  col=pallete.dark2[4]
 )
 text(
   x=21,
   y=650,
   labels=paste0("Mean (Variance) = ", round(mean(soccer.ev), 1)),
-  col="#D55E00",
+  col=pallete.dark2[4],
   cex=0.70
 )
 
@@ -60,14 +64,12 @@ plot(
 abline(
   h=75,
   lty="dotted",
-  col="#56B4E9"
+  col=pallete.dark2[4]
 )
 text(
   x=20,
   y=70,
   labels="Cumulative Variance = 75%",
-  col="#56B4E9",
+  col=pallete.dark2[4],
   cex=0.70
 )
-
-par(mar=rep(0,4))
