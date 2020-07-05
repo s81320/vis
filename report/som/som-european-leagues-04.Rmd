@@ -1,0 +1,341 @@
+---
+title: "SOM plot for scores at field position"
+author: "Silke Meiner"
+date: "July 3rd , 2020"
+output:
+  html_notebook:
+    toc: yes
+    code_folding: hide
+    fig_caption: yes
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    toc: yes
+---
+setup
+```{r}
+rm(list=ls())
+
+# install.packages("dplyr")                                    # Install dplyr package
+library(dplyr)      
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+# install.packages("kohonen") 
+require(kohonen)
+
+# install.packages("RColorBrewer")
+library(RColorBrewer)
+
+#setwd("~/Desktop")
+#setwd("~/Documents/studiumDataScience/semester2/vis/group-work/data")
+```
+# background and goals
+
+You already know this about our FIFA data set:
+
+![player positions on the soccer pitch](player-positions-with-layout.png){width=300px}
+![grouping of field positions](grouping-field-positions.png){width=400px}
+
+and we will now explain the following visualisations for it.
+
+## Comparing clubs
+
+![scores of all players of selected clubs](club-wise.png){width=400px}
+
+## Comparing leagues
+
+![leagues to whitch players from a spechified cluster belong to](leagues-with-clusters.png){width=400px}
+
+# getting there
+
+## read data
+preprocessed FIFA data and set additional information on clubs belonging to European Leagues
+
+```{r}
+soccer.1 <- read.csv("soccer-preprocessed-01.csv") 
+
+# clubs for five european leagues
+## British Premier League
+PL <- c("Arsenal","Bournemouth", "Brighton & Hove Albion", "Burnley", "Cardiff City", "Chelsea", "Crystal Palace","Everton", "Fulham", "Huddersfield Town", "Leicester City", "Liverpool", "Manchester City", "Manchester United", "Newcastle United", "Southampton", "Tottenham Hotspur", "Watford", "West Ham United", "Wolverhampton Wanderers")
+## Spanish LaLiga
+LL <- c("Atlético Madrid","FC Barcelona", "Real Madrid", "Athletic Club de Bilbao", "Real Betis", "RC Celta", "RCD Espanyol","Real Sociedad", "Valencia CF", "Real Valladolid CF", "Deportivo Alavés", "SD Eibar", "Rayo Vallecano", "Sevilla FC", "Villarreal CF", "Levante UD", "Getafe CF","CD Leganés", "Girona FC", "SD Huesca")
+## German Bundesliga
+BL <- c("FC Bayern München","Borussia Dortmund", "Borussia Mönchengladbach", "SC Freiburg", "Bayer 04 Leverkusen", "FC Schalke 04", "VfB Stuttgart","SV Werder Bremen", "Hertha BSC", "1. FSV Mainz 05", "1. FC Nürnberg", "VfL Wolfsburg", "Hannover 96", "Eintracht Frankfurt", "TSG 1899 Hoffenheim", "FC Augsburg", "Fortuna Düsseldorf", "RB Leipzig")
+## Italian Serie A
+SA <- c("Atalanta","Bologna", "Cagliari","Chievo", "Empoli","Fiorentina","Frosinone","Genoa", "Inter", "Juventus","Lazio", "Milan", "Napoli", "Parma", "Roma", "Sampdoria", "Sassuolo", "Spal", "Torino", "Udinese")
+## French League 1
+L1 <- c("FC Girondins de Bordeaux","En Avant de Guingamp", "LOSC Lille", "Olympique Lyonnais", "AS Monaco", "Montpellier HSC", "FC Nantes","OGC Nice", "Paris Saint-Germain", "Stade Rennais FC", "RC Strasbourg Alsace", "Stade Malherbe Caen", "Olympique de Marseille", "Nîmes Olympique", "Stade de Reims", "Angers SCO", "Toulouse Football Club", "Amiens SC", "AS Saint-Étienne", "Dijon FCO")
+```
+
+```{r}
+european.leagues.names <- c("L1","BL","LL","PL","SA")
+european.leagues <- c(all_of(L1),all_of(BL), all_of(PL),all_of(LL),all_of(SA)) # should be done with apply? Did not work
+```
+
+## select players and attributes
+We will look at players from clubs that participate in one of five European leagues. And only at field players.
+```{r}
+sfp.1 <- filter(soccer.1, Position !="GK") 
+sfp.1 <- filter(sfp.1, Club %in% european.leagues) 
+# names(sfp.1)
+```
+From all 26 available field positions we select 10: 4 wing positions and 6 center positions representing the available data. Field positions are also ordered from attacking (first) to defense / back (last).
+```{r}
+# ordering of positions: wingers (LW, LM, LWB, LB) in line
+nfp <- c("ST","CF","LW","CAM","LM","CM","LWB","CDM","LB","CB") # names field positions
+sfp.2<-select(sfp.1, c("Name","Club","Age","Value","Position",all_of(nfp)))
+```
+## train SOM
+Training the SOM has been done with the following code. The resulting object has been saved. To stick with the resulting som do not calculate the som anew but use the saved RDS.
+
+We train the SOM on the positional scores as Training data.
+```{r eval=FALSE, include=FALSE}
+
+mygrid = somgrid(10,10, "hexagonal")
+Xtraining <- scale(sfp.2[,c(6:15)])
+
+old <- cur <- Inf
+set.seed(1969) # seed 1969 has high performers in cell 1
+
+## iterative improvement of SOM
+for (i in 1:100){
+  erg <- som(Xtraining, grid=mygrid, rlen=1000)
+  cur <- sum(erg$distances)
+  if (cur<old){
+    erg2 <- erg
+    old <- cur
+  }
+}
+soc.som <- erg2 # we will work with the soc.som
+#saveRDS(soc.som, file = "soc.som.european.layout10.RDS")
+# load with soc.som <- readRDS("soc.som.european.layout7.RDS")
+```
+
+```{r eval=FALSE, include=FALSE}
+# load the real improved som
+soc.som <- readRDS("soc.som.european.layout10.RDS")
+plot(soc.som$changes, type='l')
+# alt: create a som quickly, prob. different from improved one.
+#soc.som <- som(Xtraining, grid=mygrid, rlen=1000)
+```
+## SOM results
+Investigate the codes
+```{r}
+plot(soc.som, main="codes, european leagues", codeRendering="lines", shape="straight", bg="white", border="gray", keepMargins=TRUE)
+#ssp <- recordPlot() # ssp : soccer som plot
+#identify(x=soc.som)
+#add.cluster.boundaries(x=soc.som, clustering )
+
+```
+Look at codes and additional information on quality, distances, counts
+```{r}
+par(mfrow=c(1,3), mar=c(1,1,1,1)+1)
+plot(soc.som, shape="straight",type="quality", main="quality")
+plot(soc.som, shape="straight",type="dist.neighbours", main="distances")
+plot(soc.som, shape="straight",type="counts", main="counts")
+```
+
+Inspect a selected unit. What does the red line actually mean?
+
+The red line corresponds to the scores in the field positions. And field positions are ordered from attacking (on the left) to defense (on the right). Players in unit 1 have perform very well in each positions.
+
+In general we have high performers on the left boundary, at the top left high performance only in the defence positions. In unit 3 high performance only in the attacking positions. We have a whole area of average performers in the middle of the plot, a little to the top right corner. 
+
+```{r message=TRUE, warning=TRUE}
+#{r fig.height=4, fig.width=2.5}
+
+
+# left block
+par(fig=c(0,0.45,0,0.9), new=TRUE)
+plot(soc.som$codes[[1]]["V1",], type="l", main="unit 1, bottom left", col="red", ylim=c(-1,2.2), xaxt='n', yaxt='n', bty='n', xlab="field position", ylab="")
+mtext(text="score", side=2 , line=1)
+axis(1, at=1:10, labels=names(soc.som$codes[[1]][1,]) , cex=0.7 )
+#axis(2, at=-3:1 , labels=FALSE , tick=FALSE)
+abline(h=0, col="gray")
+
+# right block
+par(fig=c(0.55,1,0.2,0.9), new=TRUE)
+plot(soc.som, main="codes, european leagues", codeRendering="lines", shape="straight", bg="white", border="gray")
+
+# bottom legend
+#par(fig=c(0.55,1,0,0.2), new=TRUE)
+#mtext( text=names(soc.som$codes[[1]][1,]), side=1)
+#legend(x="bottom", title="grouping", legend=names(soc.som$codes[[1]][1,]))
+
+# top block
+par(fig=c(0,1,0.9,1), new=TRUE)
+mtext(text = "interpretation of som plot codes", side=3, line=1, las=1 )
+
+
+
+```
+
+```{r}
+# add info on the units the players are mapped sfp.2
+sfp.2$unit <- soc.som$unit.classif
+```
+Get names of players mapped to unit 1.
+```{r}
+filter(sfp.2, unit==1) %>% select(Name, Club, Position, Age, Value) %>% arrange(.,Position)
+```
+Which unit is Messi mapped to, and who else is in that unit?
+```{r}
+unit.n <- filter(sfp.2, Name=="L. Messi") %>% select(unit)
+filter(sfp.2, unit==unit.n$unit) %>% select(Name, Club, Position, Age, Value) %>% arrange(.,Position)
+```
+Messi is in unit 3. Players here outperform in attacking positions and are more or less average defending positions.
+
+Which unit is Robert Lewandowski mapped to, and who else is in that unit?
+```{r}
+unit.n <- filter(sfp.2, Name=="R. Lewandowski") %>% select(unit)
+filter(sfp.2, unit==unit.n$unit) %>% select(Name, Club, Position, Age, Value) %>% arrange(Position)
+```
+Lewandowski is mapped to unit 4, adjacent to unit 3.
+
+This all makes sense.
+
+### comparing clubs
+We work with colors associated with soccer. This is our palette.
+```{r message=FALSE, warning=FALSE}
+soc.pal.1 <- function(k) {brewer.pal(n=k , name="Greens")}
+```
+
+We present a new type of visualisation to simultaneously look at all players of a team.
+```{r}
+property<-rep(0,times=100)
+n.1<-13
+sfp.3 <- filter(sfp.2, Club==PL[n.1])
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+property[1]<-3
+# brewer.pal(n=8, name="Greens")
+plot(soc.som, type="property", property=property, main=PL[n.1], palette.name = soc.pal.1 , shape="straight")
+```
+How do clubs compare wrt their players distributed over the SOM plot units.
+```{r}
+par(mfrow=c(3,3), mar=c(1,1,1,1)-1 , oma=c(0,0,3,0))
+property<- rep(0,times=100)
+
+
+## 1. row ###
+sfp.3 <- filter(sfp.2, Club=="Manchester City")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Man City", palette.name =soc.pal.1 , shape="straight")
+
+sfp.3 <- filter(sfp.2, Club=="Watford")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Watford", palette.name = soc.pal.1 , shape="straight")
+
+sfp.3 <- filter(sfp.2, Club=="Huddersfield Town")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Huddersfield", palette.name =soc.pal.1 , shape="straight")
+
+## 2. row ###
+sfp.3 <- filter(sfp.2, Club=="Juventus")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Juventus", palette.name =soc.pal.1 , shape="straight")
+
+sfp.3 <- filter(sfp.2, Club=="Bologna")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Bologna", palette.name =soc.pal.1 , shape="straight")
+
+
+sfp.3 <- filter(sfp.2, Club=="Frosinone")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Frosinone", palette.name =soc.pal.1 , shape="straight")
+
+## 3. row ##
+sfp.3 <- filter(sfp.2, Club=="FC Bayern München")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="FC Bayern München", palette.name =soc.pal.1 , shape="straight")
+p.1 <- property
+
+sfp.3 <- filter(sfp.2, Club=="Hertha BSC")
+for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+plot(soc.som, type="property", property=property, main="Hertha BSC", palette.name =soc.pal.1 , shape="straight")
+
+# par( mar=c(0,4,0,0) ) # not working
+plot(soc.som, codeRendering="lines", shape="straight", bg="white", border="black", main="codes as reference")
+
+#sfp.3 <- filter(sfp.2, Club=="Hannover 96")
+#for(k in 1:100) {property[k]<- sfp.3 %>% filter(unit==k) %>% nrow}
+#plot(soc.som, type="property", property=property, main="Hannover 96", palette.name =soc.pal.1 , shape="straight")
+
+par(fig=c(0,1,0.9,1), new=TRUE)
+mtext(text = "small multiple comparing clubs", side=3, line=3, las=1 )
+
+```
+
+
+
+### comparing leagues (cluster)
+```{r}
+plot(soc.som, main="codes, european leagues, clustered", codeRendering="lines", shape="straight", bg="white", border="gray")
+## use hierarchical clustering to cluster the codebook vectors
+#som.hc <- cutree(hclust(object.distances(soc.som, "codes")), 5)
+
+som.hc.handmade <- som.hc.handmade <- as.integer(
+  c(rep(1,4), rep(2,3) , rep(3,3) , # bottom row
+    rep(1,5) , rep(2,2) , rep(3,3) , # 2nd row
+    1,1, rep(2,4) , rep(3,3) , 4 ,
+    1, rep(2,3) , rep(3,5) , 4 ,
+    6, rep(2,3) , rep(5,3) , rep(4,3) ,
+    rep(6,2) , rep(2,2) , rep(5,4) , rep(4,2) ,
+    6 , rep(5,6) , rep (4,3), 
+    6,6, rep(5,5) , rep(4,3) ,
+    rep(6,5) , rep(4,5) , 
+    rep(6,6) , rep(4,4) ) # top row
+    )
+
+add.cluster.boundaries(soc.som, som.hc.handmade, lwd = 3 , col="black")
+```
+
+Lets use this information to group players not by unit they are mapped to, but by cluster. Also we add info on the league a club is in
+```{r}
+sfp.2$league[sfp.2$Club %in% BL] <- "BL"
+sfp.2$league[sfp.2$Club %in% SA] <- "SA"
+sfp.2$league[sfp.2$Club %in% PL] <- "PL"
+sfp.2$league[sfp.2$Club %in% L1] <- "L1"
+sfp.2$league[sfp.2$Club %in% SA] <- "SA"
+sfp.2$league[sfp.2$Club %in% LL] <- "LL"
+```
+
+```{r}
+sfp.2$cluster <- as.factor(som.hc.handmade[sfp.2$unit]) # added as factor. If this causes problems elsewhere -> 
+`````
+
+We group by cluster and league.
+```{r}
+sfp.2 %>% group_by(cluster, league) %>% count
+```
+And visualize.
+```{r}
+t.1 <- sfp.2 %>% group_by(cluster, league) %>% count
+```
+
+
+
+```{r message=FALSE, warning=FALSE}
+cols <- brewer.pal(n=12, name="Paired")[c(-4,-5,-6,-8)]
+
+par(mfrow=c(2,3), mar=c(1,1,1,1)+2)
+t.3 <- filter(t.1,league=="BL") %>% select(cluster,n)
+barplot(height=t.3$n, names.arg =t.3$cluster, main="Bundesliga", col=cols, ylim=c(0,130))
+t.3 <- filter(t.1,league=="L1") %>% select(cluster,n)
+barplot(height=t.3$n, names.arg =t.3$cluster, main="Ligue 1", col=cols, ylim=c(0,130))
+t.3 <- filter(t.1,league=="LL") %>% select(cluster,n)
+barplot(height=t.3$n, names.arg =t.3$cluster, main="La Liga", col=cols, ylim=c(0,130))
+t.3 <- filter(t.1,league=="PL") %>% select(cluster,n)
+barplot(height=t.3$n, names.arg =t.3$cluster, main="Premier League", col=cols, ylim=c(0,130))
+t.3 <- filter(t.1,league=="SA") %>% select(cluster,n)
+barplot(height=t.3$n, names.arg =t.3$cluster, main="Serie A", col=cols, ylim=c(0,130))
+
+plot(soc.som, main="clustered codes as reference", codeRendering="lines", shape="straight", border="white", bg=cols[som.hc.handmade] )
+```
+
+
+
+
+
