@@ -68,6 +68,7 @@ soccer.pca <- prcomp(soccer.preprocessed[, 46:79])
 pallete.set2 <- brewer.pal(n=8, name="Set2")
 pallete.paired <- brewer.pal(n=12, name="Paired")
 pallete.dark2 <- brewer.pal(n=8, name="Dark2")
+pallete.greys <- brewer.pal(n=9, name="Greys")
 
 colors <- c(
   pallete.paired[2],
@@ -75,28 +76,49 @@ colors <- c(
   pallete.set2[6],
   pallete.dark2[2]
 )
+shapes <- c(3, 4, 21, 22)
 
-ggbiplot(
+soccer.pca.biplot <- ggbiplot(
   soccer.pca,
   obs.scale=1,
   var.scale=1,
   pc.biplot=T,
+  col=c(pallete.greys[3], pallete.dark2[4]),
   groups=soccer.preprocessed$Broader.Position,
-  ellipse=TRUE,
-  alpha=0.05
+  alpha=0
 ) +
 scale_color_manual(
   name="Broader.Position", 
   values=colors
 ) +
+scale_shape_manual(
+  name="Broader.Position", 
+  values=shapes
+) +
 geom_point(
   aes(
-    colour=soccer.preprocessed$Broader.Position
+    colour=soccer.preprocessed$Broader.Position,
+    shape=soccer.preprocessed$Broader.Position
   ),
-  size=0.5,
-  alpha=0.10
+  size=1.5,
+  alpha=0.75
 ) +
+theme_classic() +
 theme(
-  legend.direction='horizontal',
-  legend.position='top'
+  legend.direction='vertical',
+  legend.position=c(0.85, 0.75),
 )
+
+layer_arrows <- soccer.pca.biplot$layers[[1]]
+layer_texts <- soccer.pca.biplot$layers[[3]]
+layer_points <- soccer.pca.biplot$layers[[4]]
+
+layer_arrows$aes_params$colour <- pallete.greys[8]
+layer_texts$aes_params$colour <- pallete.greys[8]
+
+soccer.pca.biplot$layers <- c(
+  layer_points,
+  layer_texts,
+  layer_arrows
+)
+soccer.pca.biplot
