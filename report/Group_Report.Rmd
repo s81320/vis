@@ -1,0 +1,170 @@
+---
+title: "Chapter 3"
+output: html_notebook
+---
+There are total 27 positions where players can be placed in a football field but there are only 11 players on a pitch, at a time, for one team including goalkeeper. So, there’s need to be a way to cluster the positions in order to have understandable plots. There are three basic ways to cluster the positions which is shown below:
+
+1.	Clustering based on basic positions assigned to them
+
+  A.	Attackers - ST,CF,RF,LF,RS,LS,CF,LW,RW
+  B.	Defenders - LB,RB,RWB,LWB,RCB,CB,LCB
+  C.	Midfielders - RCM,LCM,CAM,RM,LAM,LM,CM,RAM,LDM,CDM,RDM
+
+2.	Clustering based on flanks in which they play
+
+  A.	Left Attack - LW,LS,LF
+  B.	Center Attack - ST,CF
+  C.	Right Attack - RW,RS,RF
+  D.	Left Midfield - LAM,LM,LDM,LCM
+  E.	Center Midfield - CAM,CM,CDM
+  F.	Right Midfield - RAM,RM,RDM,RCM
+  G.	Left Defense - LB,LWB
+  H.	Center Defense - LCB,RCB,CB
+  I.	Right Defense - RB,RWB
+
+3.	Clustering based on the roles they perform
+
+  A.	Strikers - ST,CF,RF,LF,RS,LS,CF
+  B.	Wingers - LW,RW
+  C.	Attacking Midfield - RCM,LCM,CAM,RM,LAM,LM,CM,RAM
+  D.	Defensive Midfield - LDM,CDM,RDM
+  E.	Full backs - LB,RB,RWB,LWB
+  F.	Center Back - RCB,CB,LCB
+
+The number of unique clubs in the dataset is 651. In order to filter the data a little, for the next few plots, we have considered only the clubs which are included in the top 5 leagues of Europe. The Leagues are as below:
+
+1.	Bundesliga 
+      Country: Germany,  Clubs: 18
+2.	Premier League 
+      Country: England, Clubs: 20
+3.	LaLiga 
+      Country: Spain, Clubs: 20
+4.	Ligue1 
+      Country: France, Clubs: 20
+5.	Serie A 
+      Country: Italy, Clubs: 17
+
+The number of clubs shown here is according to the year 2019.
+
+```{python}
+#library imports
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+import plotly.express as px
+import plotly.offline as py
+```
+
+```{python}
+#file imports
+Nationality = pd.read_csv('Nationality.csv')
+Position = pd.read_csv('Foot_Position.csv')
+WeakFoot = pd.read_csv('WeakFoot.csv')
+Moves = pd.read_csv('Moves.csv')
+Leagues = pd.read_csv('Leagues.csv')
+```
+
+```{python}
+# Plot 1 (Distribution of Weak Foot of players among different Positions)
+WeakFoot["Weak_Foot"] = WeakFoot["Weak_Foot"].astype(str)
+fig = px.bar(WeakFoot, x='Post', y='Player_Count', color = 'Weak_Foot', barmode='group')
+fig.update_xaxes(title_text='Positions in Football Field')
+fig.update_yaxes(title_text='Number of Players')
+fig.update_layout(title_text='Disribution of Weak Foot ratings at different Positions', xaxis={'categoryorder':'array', 'categoryarray':['Defenders','Midfielders','Attackers']})
+py.plot(fig, filename = "WeakFoot.html", auto_open=False)
+```
+
+```{r}
+# To show the interactive plotly plot
+htmltools::includeHTML("WeakFoot.html")
+```
+
+
+The bar plot above shows how the ratings of the weak foot of the players is spread over three different positions (Clustering 2).
+
+The Weak Foot Skill measures the ability of a player to shoot with one foot as he does with his preferred foot. All players have a preferred foot. Having a 5-star weak foot rating means that a player’s weaker foot shot is identical to their preferred foot shot. Having a 2-star weak foot rating means that the player can only shoot OK with one foot. Majority of footballers have the average of 3 star week foot. This can be clearly depicted from the plot that despite the position majority lies in 3 star weak-foot pile, although midfielder and striker positions have better ratio of players with better than average weak foot, 4 or 5 star weak foot.
+
+
+```{python}
+# Plot2 (Distribution of Skill Moves of players among different Positions)
+Moves["Skill_Moves"] = Moves["Skill_Moves"].astype(str)
+fig = px.bar(Moves, x='Post', y='Player_Count', color = 'Skill_Moves', barmode='group')
+fig.update_xaxes(title_text='Different Positions in Football')
+fig.update_yaxes(title_text='Number of Players')
+fig.update_layout(title_text='Distribution of Star Skill Moves at different Positions', xaxis={'categoryorder':'array', 'categoryarray':['Defenders','Midfielders','Attackers']})
+py.plot(fig, filename = "SkillMoves.html", auto_open=False)
+
+```
+
+```{r}
+# To show the interactive plotly plot
+htmltools::includeHTML("SkillMoves.html")
+```
+
+
+This bar plot shows the distribution of the Skill moves which is from 1 to 5 at three different positions based on Clustering 1 as mentioned above.
+
+The Star Skill Moves measures the ability that a player has to perform technical moves. To all skill moves are assigned a number between 1 (least complex) and 5 (most complex). The players with higher skills, as Ronaldo or Neymar, are able to perform more complex moves. The job of defender does not require performing skills as they just have to stop opposition from moving forward and/or pass the ball to the midfield. This is well supported with the plot which shows that majority of defenders have, low, 2 star skill moves and rest with 3 star skill moves. Skill moves rating improves for midfielders and strikers as they need a bit of complex moves to break into the oppositions defense and score goals. It is also clear that there are no players with the worst skill moves (i.e. 1).
+
+
+```{python}
+#Plot 3 (Comparison of Different Players's Position w.r.t their Preferred Foot)
+fig = px.bar(Position, x='Post', y='Player_Count', color = 'Preferred_Foot', barmode='group')
+fig.update_xaxes(title_text='Different Positions in Football')
+fig.update_yaxes(title_text='Number of Players')
+fig.update_layout(title_text='Comparison of different positions w.r.t their Preferred Foot', xaxis={'categoryorder':'array', 'categoryarray':['Left Attacking', 'Left Back', 'Left Midfielder','Center Attacking','Center Back','Center Midfielder', 'Right Attacking','Right Back','Right Midfielder']})
+py.plot(fig, filename = "PreferredFoot.html", auto_open=False)
+
+```
+
+```{r}
+# To show the interactive plotly plot
+htmltools::includeHTML("PreferredFoot.html")
+```
+
+
+This bar plot is plotted against the number of players vs their different positions. The coloring is varied by their preferred foot and the clustering performed here is based on their flanks (Clustering 2).
+
+Every footballer has a preferred foot, either right or left. This plot shows very interesting outcome that certain positions have more left players than right foot players and also certain position have extremely less left players. It can be stated based on this that certain positions are better suited for right or left footed players. For example, majority of left back players are left footed which is exactly opposite for right back players with majority of right foot players.
+
+
+```{python}
+#Plot 4 (Distribution of Home Grown and Foreign Players in Various Leagues)
+fig = px.bar(Nationality, x='League', y='Group_Count', color = 'Diverse', barmode='group')
+fig.update_layout(title_text='Distribution of Home grown vs Foreign Players')
+fig.update_xaxes(title_text='Leagues')
+fig.update_yaxes(title_text='Number of Players')
+py.plot(fig, filename = "Nationality.html", auto_open=False)
+
+```
+
+```{r}
+# To show the interactive plotly plot
+htmltools::includeHTML("Nationality.html")
+```
+
+
+The above bar plot shows the amount of the players playing for either their home country or foreign country from top 5 leagues in Europe.
+
+The Premier League has the highest number of foreign players playing for England whereas Bundesliga has almost the same amount of home grown and foreign players. LaLiga has more Spanish players than foreign players and the same trend is seen for the Ligue1 as well. However, SerieA has less players of their nationality but also the number of players in SerieA is quite less than players in Premier League.
+
+
+```{python}
+Leagues['International_Reputation'] = Leagues['International_Reputation'].astype(int)
+fig = px.scatter(Leagues, y="Wage(Euro)", x="Age", size = 'International_Reputation', color="International_Reputation", hover_name="Name", size_max=20)
+fig.update_yaxes(title_text='Weekly Wage of the Players')
+fig.update_xaxes(title_text='Age of the players')
+fig.update_layout(title_text='Weekly Wages of the players against their Age')
+py.plot(fig, filename = "Wages.html", auto_open=False)
+
+```
+
+```{r}
+htmltools::includeHTML("Wages.html")
+```
+
+
+The scatter plot shown here is plotted against the weekly wage of the players (in euro) against their ages. The size and the color of the points is associated with the player’s International Reputation. 
+
+Football might be one of the highest paid professions but it is also one of the shortest span profession, rarely a professional football player plays more than 10 years in pro football. This plot provide insights of highly competitive behavior of the football world. Football demands high strength and stamina from all the players on pitch irrespective of the position they play in. Hence, age can be best compared with wage of the players. As in every other profession, performance is directly related to salary and so is in football but in a very volatile way. Majority of the professional footballers are in between 20 and 35 years of age which best represents the competition and robustness of football world. Best paid footballers are all between 26 and 33 years of age which is the peak of any footballer’s career. International reputation depends on how good a player plays for their national team. As seen in plot, it is directly related with wage of a player. To summarize, competition increases with age until you reach your early thirties and then decreases. Also wage increases with increasing competition, if you play well and, better the wage better is the international reputation. 
+
