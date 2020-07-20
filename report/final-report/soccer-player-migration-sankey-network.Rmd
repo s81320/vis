@@ -2,7 +2,7 @@
 library(rmarkdown)
 ```
 
-#### How are countries doing in accomodating their soccer players?
+#### How are countries doing in accommodating their soccer players?
 
 We look at sankey-network diagram to find out how players are moving across to play in clubs worldwide.
 
@@ -143,7 +143,7 @@ Observations:
 
 2. Major European countries, with most popular leagues and clubs, are quite successful in retaining their home players, e.g. England (93%), Germany (90%), Italy (91%), Spain (82%), France (72%) etc.
 
-3. South American countries, Argentina with 67%, Columbia with 80% and one of the most popular destination of soccer in Asia, Japan with 91% are also doing a good job accomodating their talents in their homeland.
+3. South American countries, Argentina with 67%, Columbia with 80% and one of the most popular destination of soccer in Asia, Japan with 91% are also doing a good job accommodating their talents in their homeland.
 
 4. One sad exception seems to be Brazil. Despite being 5 times title winner of FIFA World Cup, most of her players are playing outside of Brazil. Only 36% of the players playing in home clubs either indicates poor infrastructure of their club football ecosystem or the clubs are unable to pay their talents by their demands.
 
